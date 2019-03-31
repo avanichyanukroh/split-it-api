@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const router = express.Router();
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -12,13 +11,13 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.send({
       msg: 'Hello! The server is currently running!'
   });
 });
 
-router.post('/api/mapJSON', (req, res) => {
+app.post('/api/mapJSON', (req, res) => {
   const mappedData = mapReceipt(req.body);
   console.log('mappedData: ', mappedData);
   res.status(201).send(mappedData);
