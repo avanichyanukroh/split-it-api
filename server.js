@@ -8,7 +8,7 @@ dotenv.config();
 const port = Number(process.env.PORT || 3000);
 
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(express.bodyParser());
 app.use(cors());
 
 app.get('/', (req, res) => {
@@ -25,7 +25,7 @@ app.post('/api/mapJSON', (req, res) => {
 
 function mapReceipt(data) {
 
-  let textAnnotations = JSON.parse(data.responses[0].textAnnotations);
+  let textAnnotations = data.responses[0].textAnnotations
 
   console.log('req.body.results coming in: ', data);
 
