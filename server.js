@@ -25,9 +25,9 @@ app.post('/api/mapJSON', (req, res) => {
 
 function mapReceipt(data) {
 
-  let textAnnotations = data.responses[0].textAnnotations;
+  let textAnnotations = JSON.parse(data.responses[0].textAnnotations);
 
-    console.log('req.body.results coming in: ', data);
+  console.log('req.body.results coming in: ', data);
 
   let mapOutput ={
       receipt: {}
