@@ -27,6 +27,8 @@ function mapReceipt(data) {
 
   let textAnnotations = data.responses[0].textAnnotations;
 
+    console.log('req.body.results coming in: ', data);
+
   let mapOutput ={
       receipt: {}
   };
