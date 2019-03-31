@@ -31,7 +31,7 @@ app.post('/api/mapJSON', (req, res) => {
       .catch((err)=> res.status(400).send(err))
 });
 
-function mapReceipt(data) {
+function mapReceipt(results) {
 
   let textAnnotations = results.responses[0].textAnnotations;
   let receipt = {};
