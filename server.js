@@ -21,12 +21,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/mapJSON', (req, res) => {
-  const mappedData = mapReceipt(req.body.results);
+  const mappedData = mapReceipt(req.body.results)
   console.log('mappedData: ', mappedData);
-  res.status(201).send(mappedData);
+  mappedData.then(() => {
+      res.status(201).send(mappedData);
+  })
+  .catch((err)=> res.status(400).send(err))
 });
 
-function mapReceipt(data) {
+async function mapReceipt(data) {
 
   let textAnnotations = data.responses[0].textAnnotations;
 
