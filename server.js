@@ -17,6 +17,12 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+router.get('/', (req, res) => {
+  res.send({
+      msg: 'Hello! The server is currently running!'
+  });
+});
+
 router.post('/api/mapJSON', (req, res) => {
   const mappedData = mapReceipt(req.body);
   console.log('mappedData: ', mappedData);
