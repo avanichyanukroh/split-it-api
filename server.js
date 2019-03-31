@@ -28,9 +28,12 @@ app.post('/api/mapJSON', (req, res) => {
 
 function mapReceipt(data) {
 
-  let textAnnotations = data.responses[0].textAnnotations
+  let textAnnotations = data.responses[0].textAnnotations;
 
   console.log('req.body.results coming in: ', data);
+  console.log('data typeof', typeof textAnnotations);
+  console.log('first one of textAnnotations', data.responses[0].textAnnotations[0]);
+  console.log('length of textAnnotation: ', textAnnotations.length);
 
   let mapOutput ={
       receipt: {}
