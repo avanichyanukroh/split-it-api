@@ -1,0 +1,27 @@
+{
+  "name": "split-it-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nsirimo/splitIt.git"
+  },
+  "author": "Anawin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nsirimo/splitIt/issues"
+  },
+  "homepage": "https://github.com/nsirimo/splitIt#readme",
+  "dependencies": {
+    "@google-cloud/vision": "^0.25.0",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "firebase-admin": "^7.2.0",
+    "firebase-functions": "^2.2.1"
+  }
+}
