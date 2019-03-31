@@ -33,41 +33,51 @@ app.post('/api/mapJSON', (req, res) => {
 
 function mapReceipt(data) {
 
-  let textAnnotations = data.responses[0].textAnnotations;
-
-  let mapOutput ={
-      receipt: {}
-  };
+  let textAnnotations = results.responses[0].textAnnotations;
+  let receipt = {};
   let itemNameCount = 1;
   let itemPriceCount = 1;
-  let rowPosition = 0;
   let rowQueue = [];
   let isCurrency = false;
+  let rows = [];
+  let tempItem;
+  let tempCX = 0;
+  let tempCY = 0;
 
   for (let i = 1; i < textAnnotations.length; i++) {
-      console.log('rowQueue currently: ', rowQueue);
-      if ((Math.abs(textAnnotations[i].boundingPoly.vertices[0].y - rowPosition) > 4 || i <= 1 ) && isCurrency === false) {
-          rowPosition = textAnnotations[i].boundingPoly.vertices[0].y;
-          rowQueue = [];
-          isCurrency = false;
-      }
 
-      if ((Math.abs(textAnnotations[i].boundingPoly.vertices[0].y - rowPosition) > 4 || i <= 1 ) && isCurrency === true) {
-          mapOutput.receipt[`item${itemPriceCount++}`].basePrice = rowQueue.join('');
-          
-          rowPosition = textAnnotations[i].boundingPoly.vertices[0].y;
-          rowQueue = [];
-          isCurrency = false;
+      tempCX = (textAnnotations[i].boundingPoly.vertices[0].x + textAnnotations[i].boundingPoly.vertices[1].x) / 2;
+      tempCY = (textAnnotations[i].boundingPoly.vertices[0].y + textAnnotations[i].boundingPoly.vertices[2].y) / 2;
+      tempItem = {
+          description: textAnnotations[i].description,
+          cx: tempCX / 10,
+          cy: Math.round(tempCY / 10)
       }
+      rows.push(tempItem)
+  }
 
-      if (textAnnotations[i].description === '$') {
-        console.log("reached $ on:, ", i)
+  rows.sort((a, b) => {
+      return a.cy - b.cy && b.cx - b.cx
+  })
+
+  for (let i = 0; i < rows.length; i++) {
+      if (i > 0) {
+          if ((Math.abs(rows[i].cy - rows[i - 1].cy) > 3) && isCurrency === false) {
+              rowQueue = [];
+          }
+  
+          if ((Math.abs(rows[i].cy - rows[i - 1].cy) > 3) && isCurrency === true) {
+              receipt[`item${itemPriceCount++}`].basePrice = rowQueue.join('');
+              rowQueue = [];
+              isCurrency = false;
+          }
+      }
+      if (rows[i].description === "$") {
           if (rowQueue.join(' ') === '') {
               console.log('mapping broke on: ', i);
               break;
           }
-          
-          mapOutput.receipt[`item${itemNameCount++}`] = {
+          receipt[`item${itemNameCount++}`] = {
               name: rowQueue.join(' ')
           }
           rowQueue = [];
@@ -75,21 +85,23 @@ function mapReceipt(data) {
           continue;
       }
 
-      rowQueue.push(textAnnotations[i].description);
+      rowQueue.push(rows[i].description);
   }
-  
+
   let grandTotal = 0;
   let currentTotal;
   for (let i = 1; i < itemNameCount; i++) {
-      mapOutput.receipt[`item${i}`]['fees'] = Math.floor(mapOutput.receipt[`item${i}`].basePrice * 0.098 * 100) / 100;
-      currentTotal = parseFloat(mapOutput.receipt[`item${i}`].basePrice) + ((Math.floor(mapOutput.receipt[`item${i}`].basePrice * 0.098 * 100) / 100));
+      receipt[`item${i}`]['fees'] = Math.floor(receipt[`item${i}`].basePrice * 0.098 * 100) / 100;
+      currentTotal = parseFloat(receipt[`item${i}`].basePrice) + ((Math.floor(receipt[`item${i}`].basePrice * 0.098 * 100) / 100));
       grandTotal += currentTotal
-      mapOutput.receipt[`item${i}`]['total'] = currentTotal;
+      receipt[`item${i}`]['total'] = currentTotal;
   }
 
-  mapOutput.receipt['grandTotal'] = Math.ceil(grandTotal * 100) / 100;
-  
-  return mapOutput;
+  receipt['grandTotal'] = Math.ceil(grandTotal * 100) / 100;
+  console.log('FINAL RESULTS:  ', receipt);
+
+  const mappedOutput = { receipt };
+  return mappedOutput;
 }
 
 app.listen(port, () => {
