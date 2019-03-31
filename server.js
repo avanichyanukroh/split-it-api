@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/mapJSON', (req, res) => {
-  const mappedData = mapReceipt(req.body);
+  const mappedData = mapReceipt(req.body.results);
   console.log('mappedData: ', mappedData);
   res.status(201).send(mappedData);
 });
