@@ -1,15 +1,16 @@
 const express = require('express');
-var router = express.Router();
+const router = express.Router();
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors');
 const dotenv = require('dotenv');
+dotenv.config();
 const googleApplicationCredentials = require('./split-it-f37c85ac3cc6.json');
 const port = process.env.PORT;
 const admin = require('firebase-admin');
 
-dotenv.config();
 app.use(bodyParser.json());
-
+app.use(cors());
 admin.initializeApp({
   credential: admin.credential.cert(googleApplicationCredentials),
   databaseURL: 'https://split-it-da392.firebaseio.com/'
