@@ -35,11 +35,6 @@ function mapReceipt(data) {
 
   let textAnnotations = data.responses[0].textAnnotations;
 
-  console.log('req.body.results coming in: ', data);
-  console.log('data typeof', typeof textAnnotations);
-  console.log('first one of textAnnotations', data.responses[0].textAnnotations[0]);
-  console.log('length of textAnnotation: ', textAnnotations.length);
-
   let mapOutput ={
       receipt: {}
   };
@@ -50,6 +45,7 @@ function mapReceipt(data) {
   let isCurrency = false;
 
   for (let i = 1; i < textAnnotations.length; i++) {
+      console.log('rowQueue currently: ', rowQueue);
       if ((Math.abs(textAnnotations[i].boundingPoly.vertices[0].y - rowPosition) > 4 || i <= 1 ) && isCurrency === false) {
           rowPosition = textAnnotations[i].boundingPoly.vertices[0].y;
           rowQueue = [];
@@ -65,8 +61,9 @@ function mapReceipt(data) {
       }
 
       if (textAnnotations[i].description === '$') {
-
+        console.log("reached $ on:, ", i)
           if (rowQueue.join(' ') === '') {
+              console.log('mapping broke on: ', i);
               break;
           }
           
